@@ -157,8 +157,6 @@ method Main(){
   arr[0,0] := 0;
   var nb := new NaiveBayes();
   var ret := nb.train(arr);**/
-  print "hello, Dafny\n";
-  
 }
 
 
