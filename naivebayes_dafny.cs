@@ -7,7 +7,8 @@ var  outerLabelCounts : map<int, int>;
 constructor () modifies {this};
 //ensures innerLabelCounts =map<int,int>[ ];
 {
-  innerLabelCounts := new map<int,map<int,int>> [10]; 
+  outerLabelCounts := map[];
+  innerLabelCounts := new map<int,map<int,int>> [3];  
 }  
 
 method classify(a: array<int>)  returns (klass : int ) 
@@ -82,18 +83,24 @@ requires a.Length0 > 0;
 requires a.Length1 > 0; 
 requires innerLabelCounts.Length == a.Length1;
 modifies innerLabelCounts;
+modifies outerLabelCounts;
+ensures (a.Length0 > 0 && a.Length1 > 0 ) ==> innerLabelCounts.Length > 0;
 //ensures (a.Length0 > 0 && a.Length1 > 0 ) ==> (forall i : int :: i >=0 && i < a.Length0 ==> (a[i,0]  in m)); 
 {  
   
+  outerLabelCounts  := getCountForEachLabel(a);
+
  //m := map[];   
  var rowIndex := 0;
  //var innerLabelIndex := 0;  
  while (rowIndex < a.Length0 ) 
- //invariant 0 <= index <= a.Length0;    
+ invariant 0 <= rowIndex <= a.Length0;    
 // invariant (a.Length1 > 0 && a.Length0 > 0) ==> forall i :: 0 <= i < index ==> a[i,0] in  m;   
   {  
-    var columnIndex := 1;
-    while(columnIndex < a.Length1){
+    var columnIndex := 1; //attributes start from index 1
+    while(columnIndex < a.Length1)
+    invariant 0 <= rowIndex <= a.Length0 && 1 <= columnIndex <= a.Length1;
+    {
       var labelCountsForValue := map[];
       //var  labelCountsForValue := new map<int,map<int,int>>;
       var value := a[rowIndex,columnIndex];
@@ -153,12 +160,19 @@ ensures (a.Length0 > 0 && a.Length1 > 0 ) ==> (forall i : int :: i >=0 && i < a.
 }
 
 method Main(){
-  /**var arr := new int[5,5];
-  arr[0,0] := 0;
+  var trainData := new int[3,3];
+  trainData[0,0] := 0;
+  trainData[0,1] := 0;
+  trainData[0,2] := 0;
+  trainData[1,0] := 0;
+  trainData[1,1] := 0;
+  trainData[1,2] := 0;
+  trainData[2,0] := 0;
+  trainData[2,1] := 0;
+  trainData[2,2] := 0;
   var nb := new NaiveBayes();
-  var ret := nb.train(arr);**/
+  nb.train(trainData);
 }
-
 
 
 
