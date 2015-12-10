@@ -7,7 +7,7 @@ var  outerLabelCounts : map<int, int>;
 constructor () modifies {this};
 //ensures innerLabelCounts =map<int,int>[ ];
 {
-  outerLabelCounts := map[];
+  outerLabelCounts :=  map[];
   innerLabelCounts := new map<int,map<int,int>> [3];  
 }  
 
@@ -16,7 +16,6 @@ requires a!= null;
 requires innerLabelCounts != null;
 requires a.Length == innerLabelCounts.Length;
 modifies innerLabelCounts;  
-//ensures in input array
 {
   var index := 0;  
   var utilLabels := new int[2];   
@@ -77,18 +76,18 @@ modifies innerLabelCounts;
 
 method train(a: array2<int>)  returns () 
 requires a != null;  
-requires innerLabelCounts != null;  
-requires innerLabelCounts.Length > 0;
 requires a.Length0 > 0;       
 requires a.Length1 > 0; 
-requires innerLabelCounts.Length == a.Length1;
 modifies innerLabelCounts;
-modifies outerLabelCounts;
-ensures (a.Length0 > 0 && a.Length1 > 0 ) ==> innerLabelCounts.Length > 0;
+requires innerLabelCounts != null;  
+requires innerLabelCounts.Length == a.Length1;
+requires innerLabelCounts.Length > 0;
+//modifies outerLabelCounts;
+ensures (a.Length0 > 0 && a.Length1 > 0 ) ==> innerLabelCounts.Length > 0 ;
 //ensures (a.Length0 > 0 && a.Length1 > 0 ) ==> (forall i : int :: i >=0 && i < a.Length0 ==> (a[i,0]  in m)); 
 {  
   
-  outerLabelCounts  := getCountForEachLabel(a);
+ // outerLabelCounts  := getCountForEachLabel(a);
 
  //m := map[];   
  var rowIndex := 0;
@@ -158,24 +157,3 @@ ensures (a.Length0 > 0 && a.Length1 > 0 ) ==> (forall i : int :: i >=0 && i < a.
 }
 
 }
-
-method Main(){
-  var trainData := new int[3,3];
-  trainData[0,0] := 0;
-  trainData[0,1] := 0;
-  trainData[0,2] := 0;
-  trainData[1,0] := 0;
-  trainData[1,1] := 0;
-  trainData[1,2] := 0;
-  trainData[2,0] := 0;
-  trainData[2,1] := 0;
-  trainData[2,2] := 0;
-  var nb := new NaiveBayes();
-  nb.train(trainData);
-}
-
-
-
-
-
-
